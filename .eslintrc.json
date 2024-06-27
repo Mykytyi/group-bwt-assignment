@@ -4,8 +4,14 @@
     "es2021": true,
     "jest": true
   },
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
+  "extends": [
+    "airbnb-base",
+    "prettier",
+    "plugin:node/recommended"
+  ],
+  "plugins": [
+    "prettier"
+  ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
@@ -16,6 +22,27 @@
     "import/no-extraneous-dependencies": "off",
     "camelcase": "off",
     "class-methods-use-this": "off",
-    "max-classes-per-file": "off"
-  }
+    "max-classes-per-file": "off",
+    "no-unused-vars": "warn",
+    "func-names": "off",
+    "no-process-exit": "off",
+    "object-shorthand": "off",
+    "arrow-body-style": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "tests/**/*"
+      ],
+      "plugins": [
+        "jest"
+      ],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "global-require": "off"
+      }
+    }
+  ]
 }

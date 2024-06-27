@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { readJsonFile } = require('./helpers/utils');
 const { jsonFile } = require('./constants');
-const { EuroCommissionFeeCalculator } = require('./helpers/dumpParser');
+const { EuroCommissionFeeCalculator } = require('./helpers/calculators');
 
 const userArgs = process.argv.slice(2);
 const fileToParse = userArgs[0];
@@ -13,13 +13,13 @@ try {
 	}
 
 	if (!jsonFile.test(fileToParse)) {
-		throw Error(`Incorrect extension: file "${fileToParse}" should be in .json format.`);
+		throw Error(`Incorrect extension: file '${fileToParse}' should be in .json format.`);
 	}
 
 	const filePath = path.resolve(__dirname, `./dumps/${fileToParse}`);
 
 	if (!fs.existsSync(filePath)) {
-		throw Error(`File not found: ${filePath}`);
+		throw Error(`File '${fileToParse}' was not found`);
 	}
 
 	const dataPromise = readJsonFile(filePath);
