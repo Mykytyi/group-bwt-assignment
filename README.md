@@ -8,6 +8,12 @@ Created by Mykyta Cherevatyi
 
 ### Usage
 
+Main script is located here:
+>**./index.js**
+
+Main parser is located here:
+>**./helpers/calculators.js**
+
 1. Install dependencies by command:
 
         npm install
