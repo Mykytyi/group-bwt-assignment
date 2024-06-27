@@ -1,12 +1,6 @@
 const moment = require('moment');
 const { NATURAL, JURIDICAL, CASH_IN, CASH_OUT } = require('../constants');
 
-const arr = [1, 2, 3, 4];
-
-const first = arr[0];
-
-console.log(first);
-
 class EuroCommissionFeeCalculator {
 	constructor() {
 		this.cashInFee = 0.03;
@@ -27,55 +21,55 @@ class EuroCommissionFeeCalculator {
 			const { type, operation } = order;
 
 			if (type === CASH_IN) {
-				fee = this.calculateCacheInFee(operation);
+				fee = this.#calculateCacheInFee(operation);
 			}
 			if (type === CASH_OUT) {
-				fee = this.calculateCacheOutFee();
+				fee = this.#calculateCacheOutFee();
 			}
 
-			this.order = null; // It is important to clear our order at the end of an iteration
+			this.order = null; // clear variable
 			console.log(fee);
 		});
 	};
 
-	calculateCacheInFee = operation => {
+	#calculateCacheInFee = operation => {
 		const { amount } = operation;
 		const fee = (amount * this.cashInFee) / 100;
-		const roundedFee = this.ceilFee(fee);
+		const roundedFee = this.#ceilFee(fee);
 
 		return roundedFee > this.cashInFeeLimit ? this.cashInFeeLimit : roundedFee;
 	};
 
-	calculateCacheOutFee = () => {
+	#calculateCacheOutFee = () => {
 		const { user_type, operation } = this.order;
 
 		if (user_type === JURIDICAL) {
-			return this.juridicalFee(operation);
+			return this.#juridicalFee(operation);
 		}
 		if (user_type === NATURAL) {
-			return this.naturalFee();
+			return this.#naturalFee();
 		}
 
 		return 0;
 	};
 
-	juridicalFee = operation => {
+	#juridicalFee = operation => {
 		const { amount } = operation;
 		const fee = (amount * this.cashOutLegalFee) / 100;
-		const roundedFee = this.ceilFee(fee);
+		const roundedFee = this.#ceilFee(fee);
 
 		return this.cashOutLegalMinFee > roundedFee ? this.cashOutLegalMinFee : roundedFee;
 	};
 
-	naturalFee = () => {
+	#naturalFee = () => {
 		const { date, user_id, operation } = this.order;
 		const { amount } = operation;
 
 		const history = this.customersHistory.get(user_id);
 
 		if (!history) {
-			this.addOrderToHistory(user_id);
-			return this.handleNaturalFeeNoHistory();
+			this.#addOrderToHistory(user_id);
+			return this.#handleNaturalFeeNoHistory();
 		}
 
 		// Parse the date of the current order
@@ -111,17 +105,17 @@ class EuroCommissionFeeCalculator {
 			const fee =
 				((sum + amount - this.cashOutFeeNaturalWeekLimit) * this.cashOutNaturalFee) / 100;
 
-			return this.ceilFee(fee);
+			return this.#ceilFee(fee);
 		}
 
 		const fee = (amount * this.cashOutNaturalFee) / 100;
 
-		this.addOrderToHistory(user_id);
+		this.#addOrderToHistory(user_id);
 
-		return this.ceilFee(fee);
+		return this.#ceilFee(fee);
 	};
 
-	handleNaturalFeeNoHistory = () => {
+	#handleNaturalFeeNoHistory = () => {
 		const { amount } = this.order.operation;
 
 		// Customer has not exceeded week limit with his first order
@@ -132,11 +126,11 @@ class EuroCommissionFeeCalculator {
 		const fee =
 			((amount - this.cashOutFeeNaturalWeekLimit) * this.cashOutNaturalFee) / 100;
 
-		return this.ceilFee(fee);
+		return this.#ceilFee(fee);
 	};
 
 	// This method controls user's order history
-	addOrderToHistory = userId => {
+	#addOrderToHistory = userId => {
 		const hasHistory = this.customersHistory.has(userId);
 
 		if (!hasHistory) {
@@ -149,7 +143,7 @@ class EuroCommissionFeeCalculator {
 		}
 	};
 
-	ceilFee = fee => {
+	#ceilFee = fee => {
 		return Math.ceil(fee * 100) / 100;
 	};
 }
