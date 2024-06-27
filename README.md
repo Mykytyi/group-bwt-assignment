@@ -26,6 +26,7 @@ Main parser is located here:
 ### Tests
 
 Test are located in the directory *./tests*
+
 You can run and test application by command:
 
         npm run test
